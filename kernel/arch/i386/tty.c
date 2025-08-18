@@ -2,8 +2,8 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-#include "include/kernel/tty.h"
-#include "include/kernel/vga.h"
+#include "kernel/tty.h"
+#include "kernel/vga.h"
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
@@ -17,7 +17,7 @@ static uint16_t* terminal_buffer;
 void terminal_initialize(void) {
 	terminal_row = 0;
 	terminal_column = 0;
-	terminal_color = vga_entry_color(LGREY, BLUE);
+	terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLUE);
 	terminal_buffer = 0xB8000;
 	for (size_t y = 0; y < VGA_HEIGHT; y++) {
 		for (size_t x = 0; x < VGA_WIDTH; x++) {
