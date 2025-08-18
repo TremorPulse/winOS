@@ -1,30 +1,34 @@
-# Host and target configuration (simplified for x86)
-HOST?=i686-elf
-HOSTARCH?=i386
+DEFAULT_HOST!=../default-host.sh
+HOST?=DEFAULT_HOST
+HOSTARCH!=../target-triplet-to-arch.sh $(HOST)
 
-# Compiler and flags
-CC?=$(HOST)-gcc
-AR?=$(HOST)-ar
 CFLAGS?=-O2 -g
 CPPFLAGS?=
 LDFLAGS?=
 LIBS?=
 
-# Installation directories
 DESTDIR?=
 PREFIX?=/usr/local
 EXEC_PREFIX?=$(PREFIX)
 INCLUDEDIR?=$(PREFIX)/include
 LIBDIR?=$(EXEC_PREFIX)/lib
 
-# Kernel-specific flags
-CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra -nostdlib -fno-builtin -fno-stack-protector
+CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra
 CPPFLAGS:=$(CPPFLAGS) -D__is_libc -Iinclude
 LIBK_CFLAGS:=$(CFLAGS)
 LIBK_CPPFLAGS:=$(CPPFLAGS) -D__is_libk
 
-# Source files that will be implemented
+ARCHDIR=arch/$(HOSTARCH)
+
+include $(ARCHDIR)/make.config
+
+CFLAGS:=$(CFLAGS) $(ARCH_CFLAGS)
+CPPFLAGS:=$(CPPFLAGS) $(ARCH_CPPFLAGS)
+LIBK_CFLAGS:=$(LIBK_CFLAGS) $(KERNEL_ARCH_CFLAGS)
+LIBK_CPPFLAGS:=$(LIBK_CPPFLAGS) $(KERNEL_ARCH_CPPFLAGS)
+
 FREEOBJS=\
+$(ARCH_FREEOBJS) \
 stdio/printf.o \
 stdio/putchar.o \
 stdio/puts.o \
@@ -35,28 +39,22 @@ string/memmove.o \
 string/memset.o \
 string/strlen.o \
 
-# Currently no hosted objects for kernel
-HOSTEDOBJS=
+HOSTEDOBJS=\
+$(ARCH_HOSTEDOBJS) \
 
-# All objects
 OBJS=\
 $(FREEOBJS) \
 $(HOSTEDOBJS) \
 
-# Kernel library objects
 LIBK_OBJS=$(FREEOBJS:.o=.libk.o)
 
-# Target binaries (only kernel library for now)
+#BINARIES=libc.a libk.a # Not ready for libc yet.
 BINARIES=libk.a
 
-.PHONY: all clean install install-headers install-libs setup-dirs help
+.PHONY: all clean install install-headers install-libs
 .SUFFIXES: .o .libk.o .c .S
 
-all: setup-dirs $(BINARIES)
-
-# Setup directory structure
-setup-dirs:
-	@mkdir -p stdio stdlib string
+all: $(BINARIES)
 
 libc.a: $(OBJS)
 	$(AR) rcs $@ $(OBJS)
@@ -67,7 +65,7 @@ libk.a: $(LIBK_OBJS)
 .c.o:
 	$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS) $(CPPFLAGS)
 
-.S.o:
+.c.S:
 	$(CC) -MD -c $< -o $@ $(CFLAGS) $(CPPFLAGS)
 
 .c.libk.o:
@@ -90,17 +88,6 @@ install-headers:
 install-libs: $(BINARIES)
 	mkdir -p $(DESTDIR)$(LIBDIR)
 	cp $(BINARIES) $(DESTDIR)$(LIBDIR)
-
-help:
-	@echo "winOS Kernel Library Makefile"
-	@echo "Available targets:"
-	@echo "  all          - Build the kernel library"
-	@echo "  clean        - Clean build artifacts"
-	@echo "  install      - Install headers and libraries"
-	@echo "  setup-dirs   - Create required directory structure"
-	@echo ""
-	@echo "Note: You need to implement the C source files in:"
-	@echo "  stdio/, stdlib/, string/ directories"
 
 -include $(OBJS:.o=.d)
 -include $(LIBK_OBJS:.o=.d)
