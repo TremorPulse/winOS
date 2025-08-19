@@ -1,9 +1,12 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
+#include <libc/include/stdio.h>
+#include <libc/include/string.h>
 #include <libc/include/errno.h>
+#include <include/kernel/kernel_levels.h>
+
+extern int current_level;
 
 static bool print(const char* data, size_t length) {
 	const unsigned char* bytes = (const unsigned char*) data;
@@ -13,7 +16,11 @@ static bool print(const char* data, size_t length) {
 	return true;
 }
 
-int printf(const char* restrict format, ...) {
+int printk(int level, const char* restrict format, ...) {
+
+    if(level < current_level)
+        return 0;
+
 	va_list parameters;
 	va_start(parameters, format);
 
@@ -32,7 +39,7 @@ int printf(const char* restrict format, ...) {
 				return EOVERFLOW;
 			}
 			if (!print(format, amount))
-				return -1;
+				return !print(format, amount);
 			format += amount;
 			written += amount;
 			continue;
@@ -44,7 +51,7 @@ int printf(const char* restrict format, ...) {
 			format++;
 			char c = (char) va_arg(parameters, int /* char promotes to int */);
 			if (!maxrem) {
-				return -1;
+				return EOVERFLOW;
 			}
 			if (!print(&c, sizeof(c)))
 				return -1;
@@ -63,7 +70,7 @@ int printf(const char* restrict format, ...) {
 			format = format_begun_at;
 			size_t len = strlen(format);
 			if (maxrem < len) {
-				return EOVERFLOW;
+				return -1;
 			}
 			if (!print(format, len))
 				return -1;
