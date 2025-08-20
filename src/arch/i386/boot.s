@@ -1,4 +1,3 @@
-
 .set ALIGN,    1<<0             
 .set MEMINFO,  1<<1             
 .set FLAGS,    ALIGN | MEMINFO  

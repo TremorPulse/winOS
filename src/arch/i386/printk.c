@@ -49,7 +49,7 @@ int printk(int level, const char* restrict format, ...) {
 
 		if (*format == 'c') {
 			format++;
-			char c = (char) va_arg(parameters, int /* char promotes to int */);
+			char c = (char) va_arg(parameters, int);
 			if (!maxrem) {
 				return EOVERFLOW;
 			}

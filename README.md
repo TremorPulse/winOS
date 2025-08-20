@@ -21,7 +21,7 @@ or we can boot more realistically using GRUB:
 ```bash
 # Create bootable ISO
 mkdir -p isodir/boot/grub
-cp sysroot/boot/myos.kernel isodir/boot/
+cp sysroot/boot/winOS.kernel isodir/boot/
 
 cat > isodir/boot/grub/grub.cfg << 'EOF'
 menuentry "winOS" {

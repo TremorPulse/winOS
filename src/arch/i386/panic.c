@@ -2,17 +2,16 @@
 #include "kernel/vga.h"
 #include <kernel/printk.h>
 #include <kernel/kernel_levels.h>
-#define VGA_BASE 0xB8000
 
-/* We must inform ourselves when we encounter an unrecoverable exception. */
+/* We must inform ourselves when we encounter an unrecoverable exception. 
+ - Clear all interrupts , inform us and halt the CPU.
+*/
 
 /* This function will implement variable args later.*/
-void panic(const char* msg)
-{
-    // TODO: Disable interrupts.
-    printk(KERN_EMERG, "An unrecoverable exception has occured. Rebooting.");
-    // TODO: Dump stack and other debug info.
-    // TODO: SET A REBOOT TIMER AFTER %d seconds
-    asm("jmp 0xFFFF");
-}
 
+void panic(const char* msg) {
+    asm volatile("cli");
+    printk(KERN_EMERG, "PRODUCTION: An unrecoverable exception has occured.");
+    while(1)
+        asm volatile("hlt");
+}
