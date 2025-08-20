@@ -1,10 +1,10 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <stdarg.h>
-#include <libc/include/stdio.h>
-#include <libc/include/string.h>
-#include <libc/include/errno.h>
-#include <include/kernel/kernel_levels.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include <kernel/kernel_levels.h>
 
 extern int current_level;
 

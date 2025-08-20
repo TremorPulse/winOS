@@ -16,7 +16,7 @@ LIBDIR?=$(EXEC_PREFIX)/lib
 CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra
 CPPFLAGS:=$(CPPFLAGS) -D__is_libc -Iinclude
 LIBK_CFLAGS:=$(CFLAGS)
-LIBK_CPPFLAGS:=$(CPPFLAGS) -D__is_libk -I../kernel/include
+LIBK_CPPFLAGS:=$(CPPFLAGS) -D__is_libk -I../src/include
 
 ARCHDIR=arch/$(HOSTARCH)
 
