@@ -11,7 +11,7 @@
 
 void panic(const char* msg) {
     asm volatile("cli");
-    printk(KERN_EMERG, "PRODUCTION: An unrecoverable exception has occured.");
+    printk(KERN_EMERG, "KERNEL PANIC: %s", msg);
     while(1)
         asm volatile("hlt");
 }

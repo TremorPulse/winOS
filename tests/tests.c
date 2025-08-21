@@ -7,6 +7,7 @@ static inline void outb(uint16_t port, uint8_t value) {
 
 void test_init(void) {
     serial_init();
+    
     serial_write_string("\n\nStarting test...\n");
 }
 
