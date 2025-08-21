@@ -1,3 +1,8 @@
+/* Interrupt Descriptor Table
+ * This file defines the protected and long mode 
+ counterpart to the real mode Interrupt Vector Table.
+ */
+
 #include <stdint.h>
 #include <string.h>
 #include <kernel/idt.h>

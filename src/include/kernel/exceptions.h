@@ -1,4 +1,5 @@
 #pragma once
+
 #include <stdint.h>
 
 #define EXCEPTION_DIVIDE_ERROR              0x00

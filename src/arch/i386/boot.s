@@ -21,12 +21,15 @@ stack_top:
 .type _start, @function
 _start:
 	movl $stack_top, %esp
-
+	
+	# Push multiboot info for kernel_main() function
+	# EAX = magic number, EBX = multiboot info pointer
+	pushl %eax    # Push magic number as second parameter
+	pushl %ebx    # Push multiboot info pointer as first parameter
+	
 	call _init
-
-	call kernel_main
-
+	call kernel_main     # Call kernel_main() with parameters
+	
 	cli
 1:	hlt
 	jmp 1b
-.size _start, . - _start
