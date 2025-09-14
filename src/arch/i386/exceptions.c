@@ -18,12 +18,12 @@ void exception_handler(uint32_t *stack_ptr) {
     uint32_t edi = stack_ptr[0];   // From pusha
     uint32_t esi = stack_ptr[1];   // From pusha  
     uint32_t ebp = stack_ptr[2];   // From pusha
-    // skip esp at stack_ptr[3]     // From pusha (ignored)
+    // skip esp at stack_ptr[3]    // From pusha (ignored)
     uint32_t ebx = stack_ptr[4];   // From pusha
     uint32_t edx = stack_ptr[5];   // From pusha
     uint32_t ecx = stack_ptr[6];   // From pusha
     uint32_t eax = stack_ptr[7];   // From pusha
-    uint32_t ds = stack_ptr[8];    // Data segment you pushed
+    uint32_t ds = stack_ptr[8];    // Data segment pushed
     uint32_t exception_num = stack_ptr[9];  // Exception number
     uint32_t error_code = stack_ptr[10];    // Error code
     uint32_t eip = stack_ptr[11];  // From CPU interrupt
@@ -57,7 +57,6 @@ void exception_handler(uint32_t *stack_ptr) {
             panic("Unknown exception");
     }
 }
-
 
 void __attribute__((weak)) divide_error_handler(struct exception_frame *frame) {
     printk(KERN_CRIT, "Division by zero at EIP: 0x%x\n", frame->eip);

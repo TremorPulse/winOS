@@ -12,7 +12,7 @@ void test_main(void) {
     serial_write_string("Testing panic function...\n");
     
     panic("Test panic message");
-    TEST_PASS("panic function work");
+    TEST_PASS("panic function works");
     
     // Should never reach here
     TEST_ASSERT(0, "Panic did not halt execution");

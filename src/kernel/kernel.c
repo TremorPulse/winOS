@@ -8,6 +8,7 @@
 #include <kernel/interrupts.h>
 #include <kernel/multiboot.h>
 #include <kernel/serial.h>
+#include <kernel/paging.h>
 
 int current_level = 0;
 int a = 5;
@@ -37,6 +38,14 @@ void kernel_main(multiboot_info_t* mbd, uint32_t magic) {
     printk(KERN_NOTICE, "  Setting up IDT...");
     idt_init();
     printk(KERN_NOTICE, " [OK]\n");
+
+    printk(KERN_NOTICE, "  Setting up pages... ");
+    init_page_table();
+    printk(KERN_NOTICE, " [OK]\n");
+
+    printk(KERN_NOTICE, "Testing page fault...\n");
+    uint32_t *bad_ptr = (uint32_t*)0xDEADBEEF;  // Unmapped address
+    *bad_ptr = 0x12345678;  // This should trigger a page fault
 
     printk(KERN_NOTICE,"\nBase Address    | Length      | Type\n");
     printk(KERN_NOTICE, "-------------------------------------\n");
@@ -68,9 +77,6 @@ void kernel_main(multiboot_info_t* mbd, uint32_t magic) {
            (uint32_t)(total_available / (1024 * 1024)));
     
     printk(KERN_NOTICE, "\nKernel entering idle state...\n");
-
-    int c = a / b;
-    printf("%d", c);
     
     while(1) {
         asm("hlt");
