@@ -28,7 +28,7 @@ _start:
 	pushl %ebx    # Push multiboot info pointer as first parameter
 	
 	call _init
-	call kernel_main     # Call kernel_main() with parameters
+	call kernel_main 
 	
 	cli
 1:	hlt

@@ -4,7 +4,7 @@
 #include <kernel/kernel_levels.h>
 
 /* We must inform ourselves when we encounter an unrecoverable exception. 
- - Clear all interrupts , inform us and halt the CPU.
+ - Clear all interrupts, inform us and halt the CPU.
 */
 
 /* This function will implement variable args later.*/

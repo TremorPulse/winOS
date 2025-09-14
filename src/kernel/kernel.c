@@ -5,31 +5,29 @@
 #include <kernel/exceptions.h>
 #include <kernel/idt.h>
 #include <kernel/gdt.h>
+#include <kernel/interrupts.h>
 #include <kernel/multiboot.h>
 #include <kernel/serial.h>
 
 int current_level = 0;
+int a = 5;
+int b = 0;
 
 void kernel_main(multiboot_info_t* mbd, uint32_t magic) {
     terminal_initialize();
     serial_init();
     
-    printk(KERN_NOTICE, "=====================================\n");
-    printk(KERN_NOTICE, "       winOS Kernel Starting        \n");
-    printk(KERN_NOTICE, "=====================================\n");
-    
     printk(KERN_NOTICE, "Checking multiboot magic number...\n");
     if(magic != MULTIBOOT_BOOTLOADER_MAGIC) {
-        printk(KERN_EMERG, "FATAL: Invalid magic number!\n");
-        panic("invalid magic number!");
+        panic("invalid magic number");
     }
     printk(KERN_NOTICE, "  Magic: 0x%x [OK]\n", magic);
     
     printk(KERN_NOTICE, "Checking memory map...\n");
     if(!(mbd->flags >> 6 & 0x1)) {
-        printk(KERN_EMERG, "FATAL: Invalid memory map!\n");
         panic("invalid memory map given by GRUB bootloader");
     }
+    
     printk(KERN_NOTICE, "  Memory map available [OK]\n");
 
     printk(KERN_NOTICE, "  Setting up GDT...");
@@ -39,11 +37,8 @@ void kernel_main(multiboot_info_t* mbd, uint32_t magic) {
     printk(KERN_NOTICE, "  Setting up IDT...");
     idt_init();
     printk(KERN_NOTICE, " [OK]\n");
-    
-    printk(KERN_NOTICE, "\n=====================================\n");
-    printk(KERN_NOTICE, "          System Memory Map          \n");
-    printk(KERN_NOTICE, "=====================================\n");
-    printk(KERN_NOTICE, "Base Address    | Length      | Type\n");
+
+    printk(KERN_NOTICE,"\nBase Address    | Length      | Type\n");
     printk(KERN_NOTICE, "-------------------------------------\n");
     
     int i;
@@ -72,12 +67,10 @@ void kernel_main(multiboot_info_t* mbd, uint32_t magic) {
            (uint32_t)(total_available / 1024), 
            (uint32_t)(total_available / (1024 * 1024)));
     
-    printk(KERN_NOTICE, "\n=====================================\n");
-    printk(KERN_NOTICE, "    Kernel initialization complete   \n");
-    printk(KERN_NOTICE, "         System ready for use        \n");
-    printk(KERN_NOTICE, "=====================================\n");
-    
     printk(KERN_NOTICE, "\nKernel entering idle state...\n");
+
+    int c = a / b;
+    printf("%d", c);
     
     while(1) {
         asm("hlt");

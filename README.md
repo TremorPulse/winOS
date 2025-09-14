@@ -29,6 +29,6 @@ menuentry "winOS" {
 }
 EOF
 
-grub-mkrescue -o myos.iso isodir
+grub-mkrescue -o winOS.iso isodir
 qemu-system-i386 -cdrom winOS.iso
 ```
