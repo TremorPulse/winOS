@@ -1,7 +1,7 @@
 #include <tests.h>
 #include <kernel/printk.h>
 
-void panic(const char* message) {
+void panict(const char* message) {
     printk("TEST_MODE: PANIC: %s\\n", message);  
     // Use QEMU's debug exit device
     asm volatile("outl %0, %1" : : "a"(0), "Nd"(0xf4));

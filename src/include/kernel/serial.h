@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+
 #define SERIAL_BASE        0x3F8
 #define DATA_PORT(base)    (base)
 #define SERIAL_FIFO_COMMAND_PORT(base)  (base + 2)

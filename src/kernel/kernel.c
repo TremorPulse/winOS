@@ -11,6 +11,7 @@
 #include <kernel/paging.h>
 
 int current_level = 0;
+extern uint32_t endkernel;
 int a = 5;
 int b = 0;
 
@@ -18,7 +19,7 @@ void kernel_main(multiboot_info_t* mbd, uint32_t magic) {
     terminal_initialize();
     serial_init();
     
-    printk(KERN_NOTICE, "Checking multiboot magic number...\n");
+    printk(KERN_NOTICE, "\nChecking multiboot magic number...\n");
     if(magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         panic("invalid magic number");
     }
@@ -42,10 +43,6 @@ void kernel_main(multiboot_info_t* mbd, uint32_t magic) {
     printk(KERN_NOTICE, "  Setting up pages... ");
     init_page_table();
     printk(KERN_NOTICE, " [OK]\n");
-
-    printk(KERN_NOTICE, "Testing page fault...\n");
-    uint32_t *bad_ptr = (uint32_t*)0xDEADBEEF;  // Unmapped address
-    *bad_ptr = 0x12345678;  // This should trigger a page fault
 
     printk(KERN_NOTICE,"\nBase Address    | Length      | Type\n");
     printk(KERN_NOTICE, "-------------------------------------\n");
@@ -75,8 +72,6 @@ void kernel_main(multiboot_info_t* mbd, uint32_t magic) {
     printk(KERN_NOTICE, "Total available RAM: %d KB (%d MB)\n", 
            (uint32_t)(total_available / 1024), 
            (uint32_t)(total_available / (1024 * 1024)));
-    
-    printk(KERN_NOTICE, "\nKernel entering idle state...\n");
     
     while(1) {
         asm("hlt");

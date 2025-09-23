@@ -11,7 +11,14 @@
 
 void panic(const char* msg) {
     asm volatile("cli");
-    printk(KERN_EMERG, "KERNEL PANIC: %s", msg);
+
+    printk(KERN_EMERG, "\n");
+    printk(KERN_EMERG, "Your computer ran into a problem and needs to restart.\n");
+    printk(KERN_EMERG, "We're just collecting some error info, and then we'll restart for you.\n\n");
+    printk(KERN_EMERG, "KERNEL PANIC: %s\n", msg);
+    printk(KERN_EMERG, "\nIf you call a support person, give them this info:\n");
+    printk(KERN_EMERG, "STOP CODE: KERNEL_PANIC\n");
+
     while(1)
         asm volatile("hlt");
 }
